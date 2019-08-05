@@ -12,11 +12,21 @@
         <activity
                 android:name=".MainActivity"
                 android:label="@string/app_name"
+                android:windowSoftInputMode="adjustResize"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name=".WordsActivity"
+                android:label="@string/app_name"
+                android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.WORDS"/>
+                <category android:name="android.intent.category.INFO"/>
             </intent-filter>
         </activity>
     </application>
