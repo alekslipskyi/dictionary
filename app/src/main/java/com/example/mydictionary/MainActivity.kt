@@ -17,7 +17,7 @@ import com.example.mydictionary.adapters.LibraryAdapter
 import com.example.mydictionary.models.LibraryModel.Library
 import android.content.Intent
 
-class MainActivity : AppCompatActivity() {
+class MainActivity: AppCompatActivity() {
     private val libraryController: LibraryController = LibraryController(this)
     private var isToolbarShowed: Boolean = false
 
@@ -73,65 +73,70 @@ class MainActivity : AppCompatActivity() {
 
     private fun showCreateBar() {
         if (!isToolbarShowed) {
-            slideView(0, 200)
+            isToolbarShowed = true
+            showCreatingLib(0, 200)
             buttonShow.hide()
             buttonCancel.show()
             buttonCreate.show()
-            isToolbarShowed = true
         }
     }
 
     private fun hideCreateBar() {
         if (isToolbarShowed) {
-            slideView(200, 0)
+            isToolbarShowed = false
+            showCreatingLib(0, 200)
             buttonCancel.hide()
             buttonCreate.hide()
             buttonShow.show()
-            isToolbarShowed = false
             libraryName.text.clear()
             val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(libraryName.windowToken, 0)
         }
     }
 
-    private fun handleOpenLibrary(library: Library, view: View) {
+    private fun handleOpenLibrary(library: Library) {
         val intent = Intent(this@MainActivity, WordsActivity::class.java)
-
         startActivity(intent)
     }
 
-    private fun slideView(from: Int, to: Int) {
-        var startAlpha = 0f
-        var endAlpha = 1f
-        var duration: Long = 500
-
-        if (from == 400) {
-            startAlpha = 1f
-            endAlpha = 1f
-            duration = 50
-        }
-
-        libraryName.apply {
-            alpha = startAlpha
-            visibility = View.VISIBLE
-            animate().alpha(endAlpha).setDuration(duration).start()
-        }
+    private fun showCreatingLib(from: Int, to: Int) {
+        showLibrary(isToolbarShowed)
         val valueAnimator = ValueAnimator.ofInt(from, to)
-        valueAnimator.addUpdateListener {
-            val params = containerCreate.layoutParams
-            params.height = it.animatedValue as Int
-            containerCreate.layoutParams = params
+        val heightOfContainer = appBar.height
+        valueAnimator.apply {
+            addUpdateListener {
+                val params = appBar.layoutParams
+                if (!isToolbarShowed) params.height = heightOfContainer - it.animatedValue as Int
+                else params.height = heightOfContainer + it.animatedValue as Int
+                appBar.layoutParams = params
+            }
+            interpolator = LinearInterpolator()
+            duration = 300
+            start()
         }
-        valueAnimator.interpolator = LinearInterpolator()
-        valueAnimator.duration = 200
-        valueAnimator.start()
         libraryName.requestFocus()
         val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(libraryName, 2)
     }
 
+    private fun showLibrary(show: Boolean) {
+        if (show) {
+            libraryName.apply {
+                alpha = 0f
+                visibility = View.VISIBLE
+                animate().alpha(1f).setDuration(300).start()
+            }
+        } else {
+            libraryName.apply {
+                alpha = 1f
+                visibility = View.VISIBLE
+                animate().alpha(0f).setDuration(300).start()
+            }
+        }
+    }
+
     private fun setLibraryList(data: Array<Library>) {
-        val adapter = LibraryAdapter(this, android.R.layout.simple_list_item_activated_1, data, { library, view -> handleOpenLibrary(library, view) })
+        val adapter = LibraryAdapter(this, android.R.layout.simple_list_item_activated_1, data, { library -> handleOpenLibrary(library) })
         library_list.adapter = adapter
     }
 }
