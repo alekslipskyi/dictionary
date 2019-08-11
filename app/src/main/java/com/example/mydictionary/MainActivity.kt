@@ -16,9 +16,11 @@ import android.widget.EditText
 import com.example.mydictionary.adapters.LibraryAdapter
 import com.example.mydictionary.models.LibraryModel.Library
 import android.content.Intent
+import java.util.logging.Logger
 
 class MainActivity: AppCompatActivity() {
     private val libraryController: LibraryController = LibraryController(this)
+    private val logger = Logger.getLogger("Asd")
     private var isToolbarShowed: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,11 +86,11 @@ class MainActivity: AppCompatActivity() {
     private fun hideCreateBar() {
         if (isToolbarShowed) {
             isToolbarShowed = false
-            showCreatingLib(0, 200)
             buttonCancel.hide()
             buttonCreate.hide()
             buttonShow.show()
             libraryName.text.clear()
+            showCreatingLib(0, 200)
             val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(libraryName.windowToken, 0)
         }
@@ -96,6 +98,8 @@ class MainActivity: AppCompatActivity() {
 
     private fun handleOpenLibrary(library: Library) {
         val intent = Intent(this@MainActivity, WordsActivity::class.java)
+        intent.putExtra("library_id", library.ID)
+        intent.putExtra("library_title", library.name)
         startActivity(intent)
     }
 
@@ -111,7 +115,7 @@ class MainActivity: AppCompatActivity() {
                 appBar.layoutParams = params
             }
             interpolator = LinearInterpolator()
-            duration = 300
+            duration = 200
             start()
         }
         libraryName.requestFocus()
@@ -136,7 +140,7 @@ class MainActivity: AppCompatActivity() {
     }
 
     private fun setLibraryList(data: Array<Library>) {
-        val adapter = LibraryAdapter(this, android.R.layout.simple_list_item_activated_1, data, { library -> handleOpenLibrary(library) })
+        val adapter = LibraryAdapter(this, R.layout.item_library, data, { library -> handleOpenLibrary(library) })
         library_list.adapter = adapter
     }
 }
