@@ -10,12 +10,12 @@ import com.example.mydictionary.models.WordsModel.Queries.dropTable
 import com.example.mydictionary.models.WordsModel.Queries
 import com.example.mydictionary.models.WordsModel.Columns
 
-class WordsController(context: Context, val library_id: Long): DB(context, createTable, dropTable) {
+class WordsController(context: Context, private val library_id: Long): DB(context, createTable, dropTable) {
     private var list: Array<Words> = emptyArray()
 
     private fun synchronization() {
         val db = this.readableDatabase
-        val cursor = db.rawQuery(Queries.get, null)
+        val cursor = db.rawQuery(Queries.get + library_id, null)
 
         var newList: Array<Words> = emptyArray()
 

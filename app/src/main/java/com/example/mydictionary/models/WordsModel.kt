@@ -12,7 +12,7 @@ object WordsModel : BaseColumns {
     }
 
     object Queries {
-        const val get = "SELECT * FROM $NAME"
+        const val get = "SELECT * FROM $NAME WHERE library_id="
         const val createTable =
             "CREATE TABLE $NAME (" +
                     "${BaseColumns._ID} INTEGER PRIMARY KEY," +

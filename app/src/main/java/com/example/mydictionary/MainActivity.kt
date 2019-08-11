@@ -19,7 +19,7 @@ import android.content.Intent
 import java.util.logging.Logger
 
 class MainActivity: AppCompatActivity() {
-    private val libraryController: LibraryController = LibraryController(this)
+    private val library: LibraryController = LibraryController(this)
     private val logger = Logger.getLogger("Asd")
     private var isToolbarShowed: Boolean = false
 
@@ -30,7 +30,7 @@ class MainActivity: AppCompatActivity() {
         buttonShow.setOnClickListener(handleToggleButton(true))
         buttonCancel.setOnClickListener(handleToggleButton(false))
         buttonCreate.setOnClickListener(handleCreate())
-        setLibraryList(libraryController.get())
+        setLibraryList(library.get())
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
@@ -67,7 +67,7 @@ class MainActivity: AppCompatActivity() {
 
     private fun handleCreate(): View.OnClickListener {
         return View.OnClickListener {
-            val newData = libraryController.create(libraryName.text.toString())
+            val newData = library.create(libraryName.text.toString())
             hideCreateBar()
             setLibraryList(newData)
         }
